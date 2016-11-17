@@ -1,2 +1,2 @@
 # tictactoe
-Tic Tac Toe Server
+Tic Tac Toe Server in Haskell
