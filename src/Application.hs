@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings, QuasiQuotes #-}
-module Tictactoe (runApp, app) where
+module Application (runApp, app) where
 
 import qualified Data.Aeson as A
 import           Network.Wai (Application)

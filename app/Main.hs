@@ -1,7 +1,7 @@
 module Main where
 
 import           DB (setupDB)
-import           Tictactoe (runApp)
+import           Application (runApp)
 
 main :: IO ()
 main = do
