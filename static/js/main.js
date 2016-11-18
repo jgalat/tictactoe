@@ -1,23 +1,23 @@
 $(function () {
 
-  function accept(data) {
-    $(".content").html(data.username + " : " + data.user_id);
-  };
+  var player = null;
 
-  $("#enter").click( function () {
+  $("#enter").click(function () {
     var username = $("#username").val();
 
     if (!username)
       return;
 
-    $.ajax({
-      method      : "GET",
-      url         : "connect/" + username,
-      contentType : "application/json",
-      dataType    : "json",
-      success     : accept
+    logUser(username, function (user) {
+      player = user;
+      lobby();
     });
 
   });
+
+  function lobby() {
+    var content = $(".content");
+    buildLobby(content)
+  };
 
 });

@@ -32,3 +32,8 @@ button {
   align-items: center;
   flex-direction: column;
 }
+
+.lobby {
+  text-align: left;
+  margin: 0 auto;
+}
