@@ -1,9 +1,9 @@
 name:                tictactoe
 version:             0.1.0.0
-synopsis:            Initial project template from stack
+synopsis:            Tic Tac Toe server in Haskell
 description:         Please see README.md
 homepage:            https://github.com/jgalat0/tictactoe#readme
-license:             BSD3
+license:             GPL-3
 license-file:        LICENSE
 author:              Jorge Galat
 maintainer:          jrgglt@gmail.com
