@@ -18,6 +18,7 @@ library
   exposed-modules:     Tictactoe
                      , JSON
                      , DB
+                     , Type
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , scotty

@@ -1,27 +1,20 @@
 $(function () {
 
   function accept(data) {
-    $(".content").html("Id : " + data.id);
-  };
-
-  function buildConnectInfo(username) {
-    return JSON.stringify({ "username" : username });
+    $(".content").html(data.username + " : " + data.user_id);
   };
 
   $("#enter").click( function () {
-    var username = $("#username");
+    var username = $("#username").val();
 
-    if (!username.val())
+    if (!username)
       return;
 
-    var ci = buildConnectInfo(username.val());
-
     $.ajax({
-      method      : "POST",
-      url         : "connect",
+      method      : "GET",
+      url         : "connect/" + username,
       contentType : "application/json",
       dataType    : "json",
-      data        : ci,
       success     : accept
     });
 

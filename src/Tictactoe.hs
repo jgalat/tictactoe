@@ -8,33 +8,49 @@ import           Web.Scotty
 import qualified Data.Text.Internal.Lazy as T
 import           Control.Monad.IO.Class (liftIO)
 
+import           Type
 import qualified JSON as J
-import qualified DB   as D
+import qualified DB
 
 serveIndex :: ActionM ()
 serveIndex = file "static/index.html"
 
+serveGames :: ActionM ()
+serveGames = do
+  games <- liftIO DB.getGames
+  extendedGames <- liftIO (mapM extend games)
+  json extendedGames
+  where
+    extend (Game i p1 0 s) = do
+      u1 <- DB.getUser p1
+      return (ExtendedGame i u1 Null s)
+    extend (Game i p1 p2 s) = do
+      u1 <- DB.getUser p1
+      u2 <- DB.getUser p2
+      return (ExtendedGame i u1 u2 s)
+
 invalidOperation :: ActionM ()
 invalidOperation = text "Invalid operation"
 
-isJSON :: ActionM () -> ActionM ()
-isJSON a = do
-  ct <- header "Content-Type"
-  case ct of
-    Just "application/json" -> a
-    _                       -> invalidOperation
+-- isJSON :: ActionM () -> ActionM ()
+-- isJSON a = do
+--   ct <- header "Content-Type"
+--   case ct of
+--     Just "application/json" -> a
+--     _                       -> invalidOperation
 
 newUser :: ActionM ()
 newUser = do
-    isJSON $ do u <- jsonData :: ActionM J.JSON
-                i <- liftIO (D.createNewUser (J.username u))
-                json (J.ConnectInfoResult i)
+  username  <- param "username"
+  user      <- liftIO (DB.createNewUser username)
+  json user
 
 app' :: ScottyM ()
 app' = do
   middleware $ staticPolicy (noDots >-> addBase "static")
-  get   "/"         serveIndex
-  post  "/connect"  newUser
+  get   "/"                   serveIndex
+  get   "/games"              serveGames
+  get   "/connect/:username"  newUser
 
 app :: IO Application
 app = scottyApp app'

@@ -7,41 +7,45 @@ import qualified Data.Text.Internal.Lazy as T
 import           Database.SQLite.Simple
 import           Database.SQLite.Simple.FromRow
 
-type Id = Int64
-
-data User = User  { id        :: Id
-                  , username  :: T.Text
-                  }
+import           Type
 
 instance FromRow User where
   fromRow = User <$> field <*> field
 
+instance FromRow Game where
+  fromRow = Game <$> field <*> field <*> field <*> field
+
 instance ToRow User where
-  toRow (User _ u) = toRow [u]
+  toRow (User i u) = toRow (i, u)
+
+instance ToRow Game where
+  toRow (Game i p1 p2 s) = toRow (i, p1, p2, s)
 
 tictactoeDB :: String
 tictactoeDB = "tictactoe.db"
 
-withDB :: String -> (Connection -> IO a) -> IO a
-withDB s io = do
-  conn <- open s
-  a <- io conn
-  close conn
-  return a
-
-withDB_ :: String -> (Connection -> IO ()) -> IO ()
-withDB_ s io = do
-  conn <- open s
-  io conn
-  close conn
-
 setupDB :: IO ()
-setupDB = withDB_ tictactoeDB $
+setupDB = withConnection tictactoeDB $
   \conn -> do
-    execute_ conn "CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY, username TEXT)"
+    execute_ conn "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY NOT NULL, username TEXT NOT NULL)"
+    execute_ conn "CREATE TABLE IF NOT EXISTS games (id INTEGER PRIMARY KEY NOT NULL, player1 INTEGER NOT NULL, player2 INTEGER NOT NULL, status INTEGER NOT NULL)"
 
-createNewUser :: T.Text -> IO Int64
-createNewUser u = withDB tictactoeDB $
+createNewUser :: T.Text -> IO User
+createNewUser u = withConnection tictactoeDB $
   \conn -> do
-    execute conn "INSERT INTO user (username) VALUES (?)" (User 0 u)
-    lastInsertRowId conn
+    execute conn "INSERT INTO users (username) VALUES (?)" (Only u)
+    i <- lastInsertRowId conn
+    return (User i u)
+
+getUser :: Id -> IO User
+getUser i = withConnection tictactoeDB $
+  \conn -> do
+    result <- query conn "SELECT * FROM users WHERE id = ?" (Only i)
+    case result of
+      [user]  -> return user
+      _       -> undefined
+
+getGames :: IO [Game]
+getGames = withConnection tictactoeDB $
+  \conn -> do
+    query_ conn "SELECT * FROM games"
