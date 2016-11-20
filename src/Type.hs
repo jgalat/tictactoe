@@ -13,7 +13,6 @@ type Id = Int64
 data User = User  { user_id   :: Id
                   , username  :: T.Text
                   }
-          | Null
 
 data Game = Game  { game_id   :: Id
                   , player1   :: Id
@@ -22,6 +21,6 @@ data Game = Game  { game_id   :: Id
                   }
           | ExtendedGame  { game_id       :: Id
                           , user_player1  :: User
-                          , user_player2  :: User
+                          , user_player2  :: Maybe User
                           , status        :: Int64
                           }

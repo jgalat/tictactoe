@@ -23,11 +23,11 @@ serveGames = do
   where
     extend (Game i p1 0 s) = do
       u1 <- DB.getUser p1
-      return (ExtendedGame i u1 Null s)
+      return (ExtendedGame i u1 Nothing s)
     extend (Game i p1 p2 s) = do
       u1 <- DB.getUser p1
       u2 <- DB.getUser p2
-      return (ExtendedGame i u1 u2 s)
+      return (ExtendedGame i u1 (Just u2) s)
 
 invalidOperation :: ActionM ()
 invalidOperation = text "Invalid operation"
