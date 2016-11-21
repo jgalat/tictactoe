@@ -8,7 +8,7 @@ import           Data.Aeson
 import           Control.Applicative
 import           Control.Monad
 
-type Id = Int64
+type Id = Int
 
 data User = User  { user_id   :: Id
                   , username  :: T.Text
@@ -17,10 +17,10 @@ data User = User  { user_id   :: Id
 data Game = Game  { game_id   :: Id
                   , player1   :: Id
                   , player2   :: Id
-                  , status    :: Int64
+                  , status    :: Int
                   }
           | ExtendedGame  { game_id       :: Id
                           , user_player1  :: User
                           , user_player2  :: Maybe User
-                          , status        :: Int64
+                          , status        :: Int
                           }

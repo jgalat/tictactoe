@@ -18,32 +18,31 @@ serveIndex = file "static/index.html"
 serveGames :: ActionM ()
 serveGames = do
   games <- liftIO DB.getGames
-  extendedGames <- liftIO (mapM extend games)
-  json extendedGames
-  where
-    extend (Game i p1 0 s) = do
-      u1 <- DB.getUser p1
-      return (ExtendedGame i u1 Nothing s)
-    extend (Game i p1 p2 s) = do
-      u1 <- DB.getUser p1
-      u2 <- DB.getUser p2
-      return (ExtendedGame i u1 (Just u2) s)
+  liftIO (mapM DB.extendGame games) >>= json
 
 invalidOperation :: ActionM ()
 invalidOperation = text "Invalid operation"
 
--- isJSON :: ActionM () -> ActionM ()
--- isJSON a = do
---   ct <- header "Content-Type"
---   case ct of
---     Just "application/json" -> a
---     _                       -> invalidOperation
+isJSON :: ActionM () -> ActionM ()
+isJSON a = do
+  ct <- header "Content-Type"
+  case ct of
+    Just "application/json" -> a
+    _                       -> invalidOperation
 
 newUser :: ActionM ()
 newUser = do
   username  <- param "username"
-  user      <- liftIO (DB.createNewUser username)
-  json user
+  liftIO (DB.createNewUser username) >>= json
+
+newGame :: ActionM ()
+newGame = isJSON $
+  do
+    user <- jsonData :: ActionM User
+    b    <- liftIO (DB.checkUser (user_id user))
+    if b
+      then (liftIO (DB.createNewGame user) >>= json)
+      else invalidOperation
 
 app' :: ScottyM ()
 app' = do
@@ -51,6 +50,7 @@ app' = do
   get   "/"                   serveIndex
   get   "/games"              serveGames
   get   "/connect/:username"  newUser
+  post  "/newgame"            newGame
 
 app :: IO Application
 app = scottyApp app'
