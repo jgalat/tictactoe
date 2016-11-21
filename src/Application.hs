@@ -21,7 +21,7 @@ serveGames = do
   liftIO (mapM DB.extendGame games) >>= json
 
 invalidOperation :: ActionM ()
-invalidOperation = text "Invalid operation"
+invalidOperation = json A.Null
 
 isJSON :: ActionM () -> ActionM ()
 isJSON a = do
