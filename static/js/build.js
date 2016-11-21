@@ -6,20 +6,29 @@ function buildGame(where, game) {
     data += game.player2.username;
     data += ' <span class="activable watch" game="' + game.game_id + '">Watch!<span>';
   } else {
-    data += '<span class="activable join" game="' + game.game_id + '">Join!</span>';
+    data += '<span class="activable join" game="' + game.game_id + '">Me!</span>';
   }
 
   where.append('<li> Game ' + game.game_id + ': ' + data + '</li>');
 
 };
 
+function buildControls(where) {
+
+  where.append('<span class="activable newgame">New!</span>');
+
+  where.find(".newgame").click(newGame);
+
+};
+
 function buildLobby(where) {
 
-  where.html('<div class="lobby"></div>');
+  where.html('<div class="lobby"></div><div class="controls"></div>');
 
-  var lobby = where.find(".lobby");
+  var lobby = where.find(".lobby"),
+      controls = where.find(".controls");
 
-  getGames(function (games) {
+  getGamesAjax(function (games) {
 
     lobby.append('<ul>');
 
@@ -32,13 +41,15 @@ function buildLobby(where) {
     lobby.append('</ul>');
 
     lobby.find(".join").click(function () {
-      /* something */
+      join($(this).attr("game"));
     });
 
     lobby.find(".watch").click(function () {
-      /* something */
+      watch($(this).attr("game"));
     });
 
   });
+
+  buildControls(controls);
 
 };
