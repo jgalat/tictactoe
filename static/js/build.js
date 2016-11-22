@@ -1,4 +1,4 @@
-function buildGame(where, game) {
+function buildGameItem(where, game) {
 
   var data = game.player1.username + ' vs ';
 
@@ -34,7 +34,7 @@ function buildLobby(where) {
 
     games.forEach(function (game) {
 
-      buildGame(lobby, game);
+      buildGameItem(lobby, game);
 
     });
 
