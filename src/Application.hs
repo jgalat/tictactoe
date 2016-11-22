@@ -51,12 +51,19 @@ joinGame = isJSON $
     m       <- liftIO (DB.joinGame user gameId)
     maybe invalidOperation json m
 
+watchGame :: ActionM ()
+watchGame = do
+  gameId  <- param "gameid"
+  game    <- liftIO (DB.getGame gameId)
+  maybe invalidOperation json game
+
 app' :: ScottyM ()
 app' = do
   middleware $ staticPolicy (noDots >-> addBase "static")
   get   "/"                   serveIndex
   get   "/games"              serveGames
   get   "/connect/:username"  newUser
+  get   "/watch/:gameid"      watchGame
   post  "/newgame"            newGame
   post  "/join/:gameid"       joinGame
   notFound                    invalidOperation
