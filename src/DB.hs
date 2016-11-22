@@ -107,7 +107,7 @@ joinGame u gi = withConnection tictactoeDB $
             in if cu && p2 == 0
               then do
                 execute conn "UPDATE games SET player2 = ? WHERE id = ?" [i, gi]
-                return (Just (Game gi p1 i t b))
+                return (Just (Game gi p1 i p1 b))
               else return Nothing) game
 
 getUser :: Id -> IO (Maybe User)
