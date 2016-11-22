@@ -10,7 +10,6 @@ import           Database.SQLite.Simple.FromField
 import           Database.SQLite.Simple.ToField
 import           Database.SQLite.Simple.FromRow
 import           Database.SQLite.Simple.Internal
-import           Random.IO
 
 import           Type
 
