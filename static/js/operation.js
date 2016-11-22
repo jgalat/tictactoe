@@ -13,7 +13,15 @@ function enter() {
 };
 
 function join(game_id) {
-  /* something */
+
+  if(!player)
+    return;
+
+  joinGameAjax(player, game_id, function (game) {
+    /* something */
+    lobby();
+  });
+
 };
 
 function watch(game_id) {

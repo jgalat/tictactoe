@@ -54,7 +54,7 @@ checkUser :: Connection -> User -> IO Bool
 checkUser conn u = do
   let i = user_id u
   r0 <- query conn "SELECT id FROM users where id = ?" (Only i) :: IO [Id]
-  r1 <- query conn "SELECT id FROM games where player1 = ?" (Only i) :: IO [Id]
+  r1 <- query conn "SELECT id FROM games where player1 = ? OR player2 = ?" [i, i] :: IO [Id]
   return (not (null r0) && null r1)
 
 createNewGame :: User -> IO (Maybe Game)

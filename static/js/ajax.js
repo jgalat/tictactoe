@@ -34,3 +34,16 @@ function newGameAjax(user, callback) {
   });
 
 };
+
+function joinGameAjax(user, game_id, callback) {
+
+  $.ajax({
+    method      : "POST",
+    url         : "join/" + game_id,
+    contentType : "application/json",
+    dataType    : "json",
+    data        : JSON.stringify(user),
+    success     : callback
+  });
+
+};
