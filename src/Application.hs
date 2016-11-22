@@ -6,7 +6,7 @@ import qualified Data.Aeson as A
 import           Network.Wai (Application)
 import           Network.Wai.Middleware.Static
 import           Web.Scotty
-import qualified Data.Text.Internal.Lazy as T
+import qualified Data.Text.Lazy as T
 import           Control.Monad.IO.Class (liftIO)
 
 import           Type
@@ -17,9 +17,7 @@ serveIndex :: ActionM ()
 serveIndex = file "static/index.html"
 
 serveGames :: ActionM ()
-serveGames = do
-  games <- liftIO DB.getGames
-  liftIO (mapM DB.extendGame games) >>= json
+serveGames = liftIO DB.getGames >>= json
 
 invalidOperation :: ActionM ()
 invalidOperation = json A.Null

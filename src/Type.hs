@@ -1,6 +1,6 @@
 module Type where
 
-import qualified Data.Text.Internal.Lazy as T
+import qualified Data.Text.Lazy as T
 import           Database.SQLite.Simple
 import           Database.SQLite.Simple.FromRow
 import           Data.Int
@@ -14,13 +14,26 @@ data User = User  { user_id   :: Id
                   , username  :: T.Text
                   }
 
+data CellStatus = E | X | O
+
+data Board = Board  { c0 :: CellStatus
+                    , c1 :: CellStatus
+                    , c2 :: CellStatus
+                    , c3 :: CellStatus
+                    , c4 :: CellStatus
+                    , c5 :: CellStatus
+                    , c6 :: CellStatus
+                    , c7 :: CellStatus
+                    , c8 :: CellStatus
+                    }
+
 data Game = Game  { game_id   :: Id
                   , player1   :: Id
                   , player2   :: Id
-                  , status    :: Int
+                  , turn      :: Id
+                  , board     :: Board
                   }
-          | ExtendedGame  { game_id       :: Id
-                          , user_player1  :: User
-                          , user_player2  :: Maybe User
-                          , status        :: Int
-                          }
+          | SimpleGame  { game_id       :: Id
+                        , user_player1  :: User
+                        , user_player2  :: Maybe User
+                        }

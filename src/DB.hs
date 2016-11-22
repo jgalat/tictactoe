@@ -4,11 +4,23 @@ module DB where
 import           Data.Int
 import           Data.Maybe
 import           Control.Applicative
-import qualified Data.Text.Internal.Lazy as T
+import qualified Data.Text.Lazy as T
 import           Database.SQLite.Simple
+import           Database.SQLite.Simple.FromField
+import           Database.SQLite.Simple.ToField
 import           Database.SQLite.Simple.FromRow
+import           Database.SQLite.Simple.Internal
+import           Random.IO
 
 import           Type
+
+instance FromField CellStatus where
+  fromField (Field (SQLInteger i) _) =
+    case i of
+      0 -> pure E
+      1 -> pure X
+      2 -> pure O
+      _ -> error "Int must be between 0 and 2"
 
 instance FromRow Int where
   fromRow = field
@@ -17,22 +29,38 @@ instance FromRow User where
   fromRow = User <$> field <*> field
 
 instance FromRow Game where
-  fromRow = Game <$> field <*> field <*> field <*> field
+  fromRow = Game
+            <$> field
+            <*> field
+            <*> field
+            <*> field
+            <*> (Board
+                <$> field
+                <*> field
+                <*> field
+                <*> field
+                <*> field
+                <*> field
+                <*> field
+                <*> field
+                <*> field)
+
+instance ToField CellStatus where
+  toField E = toField (0 :: Int)
+  toField X = toField (1 :: Int)
+  toField O = toField (2 :: Int)
 
 instance ToRow User where
   toRow (User i u) = toRow (i, u)
 
-instance ToRow Game where
-  toRow (Game i p1 p2 s) = toRow (i, p1, p2, s)
-
-extendGame :: Game -> IO Game
-extendGame (Game i p1 0 s) = do
+simpleGame :: Game -> IO Game
+simpleGame (Game i p1 0 _ _) = do
   u1 <- getUser p1
-  return (ExtendedGame i (fromJust u1) Nothing s)
-extendGame (Game i p1 p2 s) = do
+  return (SimpleGame i (fromJust u1) Nothing)
+simpleGame (Game i p1 p2 _ _) = do
   u1 <- getUser p1
   u2 <- getUser p2
-  return (ExtendedGame i (fromJust u1) u2 s)
+  return (SimpleGame i (fromJust u1) u2)
 
 tictactoeDB :: String
 tictactoeDB = "tictactoe.db"
@@ -41,7 +69,7 @@ setupDB :: IO ()
 setupDB = withConnection tictactoeDB $
   \conn -> do
     execute_ conn "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY NOT NULL, username TEXT NOT NULL)"
-    execute_ conn "CREATE TABLE IF NOT EXISTS games (id INTEGER PRIMARY KEY NOT NULL, player1 INTEGER NOT NULL, player2 INTEGER NOT NULL, status INTEGER NOT NULL)"
+    execute_ conn "CREATE TABLE IF NOT EXISTS games (id INTEGER PRIMARY KEY NOT NULL, player1 INTEGER NOT NULL, player2 INTEGER NOT NULL DEFAULT 0, turn INTEGER NOT NULL DEFAULT 0, c0 INTEGER NOT NULL DEFAULT 0, c1 INTEGER NOT NULL DEFAULT 0, c2 INTEGER NOT NULL DEFAULT 0, c3 INTEGER NOT NULL DEFAULT 0, c4 INTEGER NOT NULL DEFAULT 0, c5 INTEGER NOT NULL DEFAULT 0, c6 INTEGER NOT NULL DEFAULT 0, c7 INTEGER NOT NULL DEFAULT 0, c8 INTEGER NOT NULL DEFAULT 0)"
 
 createNewUser :: T.Text -> IO User
 createNewUser u = withConnection tictactoeDB $
@@ -63,23 +91,23 @@ createNewGame u = withConnection tictactoeDB $
     b <- checkUser conn u
     if b
       then do
-        execute conn "INSERT INTO games (player1, player2, status) VALUES (?, ?, ?)" [user_id u, 0, 0]
+        execute conn "INSERT INTO games (player1) VALUES (?)" (Only (user_id u))
         gameId <- lastInsertRowId conn
-        return (Just (ExtendedGame (fromIntegral gameId) u Nothing 0))
+        return (Just (SimpleGame (fromIntegral gameId) u Nothing))
       else return Nothing
 
 joinGame :: User -> Id -> IO (Maybe Game)
 joinGame u gi = withConnection tictactoeDB $
   \conn -> do
-    b     <- checkUser conn u
+    cu    <- checkUser conn u
     game  <- getGame gi
     maybe (return Nothing)
-          (\(Game gi p1 p2 s) ->
+          (\(Game gi p1 p2 t b) ->
             let i = user_id u
-            in if b && p2 == 0
+            in if cu && p2 == 0
               then do
                 execute conn "UPDATE games SET player2 = ? WHERE id = ?" [i, gi]
-                return (Just (Game gi p1 i s))
+                return (Just (Game gi p1 i t b))
               else return Nothing) game
 
 getUser :: Id -> IO (Maybe User)
@@ -100,5 +128,4 @@ getGame i = withConnection tictactoeDB $
 
 getGames :: IO [Game]
 getGames = withConnection tictactoeDB $
-  \conn -> do
-    query_ conn "SELECT * FROM games"
+  \conn -> query_ conn "SELECT * FROM games" >>= mapM simpleGame
