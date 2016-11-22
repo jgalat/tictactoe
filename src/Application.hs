@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings, QuasiQuotes #-}
 module Application (runApp, app) where
 
+import           Data.Maybe
 import qualified Data.Aeson as A
 import           Network.Wai (Application)
 import           Network.Wai.Middleware.Static
@@ -39,10 +40,16 @@ newGame :: ActionM ()
 newGame = isJSON $
   do
     user <- jsonData :: ActionM User
-    b    <- liftIO (DB.checkUser (user_id user))
-    if b
-      then (liftIO (DB.createNewGame user) >>= json)
-      else invalidOperation
+    m    <- liftIO (DB.createNewGame user)
+    maybe invalidOperation json m
+
+joinGame :: ActionM ()
+joinGame = isJSON $
+  do
+    gameId  <- param "gameid"
+    user    <- jsonData :: ActionM User
+    m       <- liftIO (DB.joinGame user gameId)
+    maybe invalidOperation json m
 
 app' :: ScottyM ()
 app' = do
@@ -51,6 +58,8 @@ app' = do
   get   "/games"              serveGames
   get   "/connect/:username"  newUser
   post  "/newgame"            newGame
+  post  "/join/:gameid"       joinGame
+  notFound                    invalidOperation
 
 app :: IO Application
 app = scottyApp app'
