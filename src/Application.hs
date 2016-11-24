@@ -32,7 +32,8 @@ isJSON a = do
 newUser :: ActionM ()
 newUser = do
   username  <- param "username"
-  liftIO (DB.createNewUser username) >>= json
+  mu        <- liftIO (DB.getUser' username)
+  maybe (liftIO (DB.createNewUser username)) return mu >>= json
 
 newGame :: ActionM ()
 newGame = isJSON $
