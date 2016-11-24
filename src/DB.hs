@@ -120,7 +120,7 @@ getUser i = withConnection tictactoeDB $
 getUser' :: T.Text -> IO (Maybe User)
 getUser' username = withConnection tictactoeDB $
   \conn -> do
-    result <- query conn "SELECT * FROM users where username username = ?" (Only username)
+    result <- query conn "SELECT * FROM users where username = ?" (Only username)
     case result of
       [user]  -> return (Just user)
       _       -> return Nothing
