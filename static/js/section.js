@@ -16,9 +16,11 @@ function gameBoard(game_id, play) {
 
   function synchronize() {
     watchGameAjax(game_id, function (game) {
-      /* TODO fillBoard(board, game.board) */
+      if (game && game.board)
+        fillBoard(board, game.board);
     });
   }
 
   setInterval(synchronize, 2000);
+
 };

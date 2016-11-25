@@ -40,9 +40,7 @@ function join(game_id) {
 
   joinGameAjax(player, game_id, function (game) {
     if (game && game.player2.user_id == player.user_id)
-      gameBoard(game_id,
-
-    true);
+      gameBoard(game_id, true);
   });
 
 };
@@ -69,6 +67,16 @@ function fillLobby(lobby) {
       watch($(this).attr("game"));
     });
 
+  });
+
+};
+
+function fillBoard(board, game_board) {
+
+  const cell_status = [ " ", "X", "O" ];
+
+  $.each(game_board, function (cell, value) {
+    board.find("#" + cell).html(cell_status[value]);
   });
 
 };

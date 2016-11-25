@@ -57,5 +57,6 @@ function buildGameBoard(where) {
 
   where.html(board_html);
 
-  return where.find(".lobby");
+  return where.find(".board");
+  
 };
