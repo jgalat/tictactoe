@@ -44,5 +44,31 @@ li {
 
 .activable {
   cursor: pointer;
-  text-decoration: underline;
+  border-bottom: 0.1rem dashed;
+}
+
+table, tr, td {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.7rem;
+  min-height: 4rem;
+  min-width: 4rem;
+  padding: .3rem;
+}
+
+td:first-child {
+  border-right: .15rem dashed;
+}
+
+td:last-child {
+  border-left: .15rem dashed;
+}
+
+tr:first-child {
+  border-bottom: .15rem dashed;
+}
+
+tr:last-child {
+  border-top: .15rem dashed;
 }

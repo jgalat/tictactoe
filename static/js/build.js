@@ -53,3 +53,28 @@ function buildLobby(where) {
   buildControls(controls);
 
 };
+
+
+function buildGameBoard(where) {
+
+  var board_html = `<table class="board">
+                      <tr>
+                        <td class="cell" id="c0"></td>
+                        <td class="cell" id="c1"></td>
+                        <td class="cell" id="c2"></td>
+                      </tr>
+                      <tr>
+                        <td class="cell" id="c3"></td>
+                        <td class="cell" id="c4"></td>
+                        <td class="cell" id="c5"></td>
+                      </tr>
+                      <tr>
+                        <td class="cell" id="c6"></td>
+                        <td class="cell" id="c7"></td>
+                        <td class="cell" id="c8"></td>
+                      </tr>
+                    </table>`;
+
+  where.html(board_html);
+
+};

@@ -18,8 +18,8 @@ function join(game_id) {
     return;
 
   joinGameAjax(player, game_id, function (game) {
-    /* something */
-    lobby();
+    if (game)
+      gameBoard(game);
   });
 
 };
@@ -34,8 +34,8 @@ function newGame() {
     return;
 
   newGameAjax(player, function (game) {
-    /* something */
-    lobby();
+    if(game)
+      gameBoard(game);
   });
 
 };
