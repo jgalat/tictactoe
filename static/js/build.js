@@ -28,29 +28,9 @@ function buildLobby(where) {
   var lobby = where.find(".lobby"),
       controls = where.find(".controls");
 
-  getGamesAjax(function (games) {
-
-    lobby.append('<ul>');
-
-    games.forEach(function (game) {
-
-      buildGameItem(lobby, game);
-
-    });
-
-    lobby.append('</ul>');
-
-    lobby.find(".join").click(function () {
-      join($(this).attr("game"));
-    });
-
-    lobby.find(".watch").click(function () {
-      watch($(this).attr("game"));
-    });
-
-  });
-
   buildControls(controls);
+
+  return lobby;
 
 };
 
@@ -77,4 +57,5 @@ function buildGameBoard(where) {
 
   where.html(board_html);
 
+  return where.find(".lobby");
 };

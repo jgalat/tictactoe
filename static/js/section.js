@@ -1,11 +1,24 @@
 function lobby() {
 
-  buildLobby($(".content"));
+  var lobby = buildLobby($(".content"));
+
+  fillLobby(lobby);
 
 };
 
-function gameBoard(game) {
+function gameBoard(game_id, play) {
 
-  buildGameBoard($(".content"));
+  var board = buildGameBoard($(".content"));
 
+  if (play) {
+    /* TODO Set board to be playable */
+  }
+
+  function synchronize() {
+    watchGameAjax(game_id, function (game) {
+      /* TODO fillBoard(board, game.board) */
+    });
+  }
+
+  setInterval(synchronize, 2000);
 };

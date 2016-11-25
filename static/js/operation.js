@@ -12,6 +12,27 @@ function enter() {
 
 };
 
+function watch(game_id) {
+
+  watchGameAjax(game_id, function (game) {
+    if (game)
+      gameBoard(game_id, false);
+  });
+
+};
+
+function newGame() {
+
+  if (!player)
+    return;
+
+  newGameAjax(player, function (game) {
+    if(game && game.player1.user_id == player.user_id)
+      gameBoard(game_id, true);
+  });
+
+};
+
 function join(game_id) {
 
   if(!player)
@@ -19,23 +40,35 @@ function join(game_id) {
 
   joinGameAjax(player, game_id, function (game) {
     if (game && game.player2.user_id == player.user_id)
-      gameBoard(game);
+      gameBoard(game_id,
+
+    true);
   });
 
 };
 
-function watch(game_id) {
-  /* something */
-};
+function fillLobby(lobby) {
 
-function newGame() {
+  getGamesAjax(function (games) {
 
-  if(!player)
-    return;
+    lobby.append('<ul>');
 
-  newGameAjax(player, function (game) {
-    if(game && game.player1.user_id == player.user_id)
-      gameBoard(game);
+    games.forEach(function (game) {
+
+      buildGameItem(lobby, game);
+
+    });
+
+    lobby.append('</ul>');
+
+    lobby.find(".join").click(function () {
+      join($(this).attr("game"));
+    });
+
+    lobby.find(".watch").click(function () {
+      watch($(this).attr("game"));
+    });
+
   });
 
 };

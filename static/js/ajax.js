@@ -47,3 +47,15 @@ function joinGameAjax(user, game_id, callback) {
   });
 
 };
+
+function watchGameAjax(game_id, callback) {
+
+  $.ajax({
+    method      : "GET",
+    url         : "watch/" + game_id,
+    contentType : "application/json",
+    dataType    : "json",
+    success     : callback
+  });
+
+};
