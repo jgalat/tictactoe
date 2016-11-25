@@ -18,7 +18,7 @@ function join(game_id) {
     return;
 
   joinGameAjax(player, game_id, function (game) {
-    if (game)
+    if (game && game.player2.user_id == player.user_id)
       gameBoard(game);
   });
 
@@ -34,7 +34,7 @@ function newGame() {
     return;
 
   newGameAjax(player, function (game) {
-    if(game)
+    if(game && game.player1.user_id == player.user_id)
       gameBoard(game);
   });
 
