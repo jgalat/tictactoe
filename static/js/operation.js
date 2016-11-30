@@ -28,7 +28,7 @@ function newGame() {
 
   newGameAjax(player, function (game) {
     if(game && game.player1.user_id == player.user_id)
-      gameBoard(game_id, true);
+      gameBoard(game.game_id, true);
   });
 
 };
