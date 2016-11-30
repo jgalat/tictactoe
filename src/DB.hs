@@ -82,8 +82,7 @@ checkUser :: Connection -> User -> IO Bool
 checkUser conn u = do
   let i = user_id u
   r0 <- query conn "SELECT id FROM users where id = ?" (Only i) :: IO [Id]
-  r1 <- query conn "SELECT id FROM games where player1 = ? OR player2 = ?" [i, i] :: IO [Id]
-  return (not (null r0) && null r1)
+  return (not (null r0))
 
 getPlayerCS :: Game -> User -> CellStatus
 getPlayerCS (Game _ p1 p2 _ _) (User i _)
@@ -114,7 +113,7 @@ joinGame gi u = withConnection tictactoeDB $
           (\(Game gi p1 p2 t b) ->
             let i = user_id u
             in
-              if cu && p2 == 0
+              if cu && p2 == 0 && p1 /= i
                 then do
                   execute conn "UPDATE games SET player2 = ?, turn = ? WHERE id = ?" [i, p1, gi]
                   u1 <- getUser p1
