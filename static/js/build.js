@@ -47,7 +47,6 @@ function buildLobby(where) {
 
 }
 
-
 function buildGameBoard(where) {
 
   var board_html = `<h3 class="alert"></h3>
