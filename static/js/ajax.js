@@ -8,7 +8,7 @@ function logUserAjax(username, callback) {
     success     : callback
   });
 
-};
+}
 
 function getGamesAjax(callback) {
 
@@ -20,7 +20,7 @@ function getGamesAjax(callback) {
     success     : callback
   });
 
-};
+}
 
 function newGameAjax(user, callback) {
 
@@ -33,7 +33,7 @@ function newGameAjax(user, callback) {
     success     : callback
   });
 
-};
+}
 
 function joinGameAjax(user, game_id, callback) {
 
@@ -46,7 +46,7 @@ function joinGameAjax(user, game_id, callback) {
     success     : callback
   });
 
-};
+}
 
 function watchGameAjax(game_id, callback) {
 
@@ -58,4 +58,17 @@ function watchGameAjax(game_id, callback) {
     success     : callback
   });
 
-};
+}
+
+function playGameAjax(game_id, play, callback) {
+
+  $.ajax({
+    method      : "POST",
+    url         : "play/" + game_id,
+    contentType : "application/json",
+    dataType    : "json",
+    data        : JSON.stringify(play),
+    success     : callback
+  });
+
+}

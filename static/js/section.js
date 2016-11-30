@@ -1,26 +1,37 @@
 function lobby() {
 
+  if (synchInterval) {
+    clearInterval(synchInterval);
+  }
+
   var lobby = buildLobby($(".content"));
 
   fillLobby(lobby);
 
-};
+}
 
 function gameBoard(game_id, play) {
 
-  var board = buildGameBoard($(".content"));
+  var content = $(".content");
+
+  var board = buildGameBoard(content);
 
   if (play) {
-    /* TODO Set board to be playable */
+    makeBoardPlayable(board, game_id);
   }
 
   function synchronize() {
     watchGameAjax(game_id, function (game) {
-      if (game && game.board)
+      if (game != null && game.board) {
         fillBoard(board, game.board);
+      } else {
+        lobby()
+      }
     });
   }
 
-  setInterval(synchronize, 2000);
+  synchInterval = setInterval(synchronize, 2000);
 
-};
+  buildGameBoardControls(content.find(".controls"), synchInterval);
+
+}

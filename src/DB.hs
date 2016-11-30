@@ -154,7 +154,7 @@ playGame gi p = withConnection tictactoeDB $
                 then return False
                 else
                   let cs = getPlayerCS game plyr
-                      nt   = if (user_id plyr == p1) then p2 else p1
+                      nt   = if user_id plyr == p1 then p2 else p1
                   in do
                     execute conn (playQuery cell) (cs, nt, gi)
                     return True) game

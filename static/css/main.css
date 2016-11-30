@@ -47,6 +47,10 @@ li {
   border-bottom: 0.1rem dashed;
 }
 
+.playcell {
+  cursor: pointer;
+}
+
 table, tr, td {
   display: flex;
   justify-content: center;
@@ -54,7 +58,7 @@ table, tr, td {
   font-size: 1.7rem;
   min-height: 4rem;
   min-width: 4rem;
-  padding: .3rem;
+  padding: .4rem;
 }
 
 td:first-child {

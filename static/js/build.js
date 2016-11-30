@@ -4,14 +4,20 @@ function buildGameItem(where, game) {
 
   if (game.player2) {
     data += game.player2.username;
-    data += ' <span class="activable watch" game="' + game.game_id + '">Watch!<span>';
+
+    if (game.player1.user_id == player.user_id || game.player2.user_id == player.user_id) {
+      data += ' <span class="activable rejoin" game="' + game.game_id + '">Rejoin!<span>';
+    } else {
+      data += ' <span class="activable watch" game="' + game.game_id + '">Watch!<span>';
+    }
+
   } else {
     data += '<span class="activable join" game="' + game.game_id + '">Me!</span>';
   }
 
   where.append('<li> Game ' + game.game_id + ': ' + data + '</li>');
 
-};
+}
 
 function buildControls(where) {
 
@@ -19,7 +25,7 @@ function buildControls(where) {
 
   where.find(".newgame").click(newGame);
 
-};
+}
 
 function buildLobby(where) {
 
@@ -32,7 +38,7 @@ function buildLobby(where) {
 
   return lobby;
 
-};
+}
 
 
 function buildGameBoard(where) {
@@ -53,10 +59,19 @@ function buildGameBoard(where) {
                         <td class="cell" id="c7"></td>
                         <td class="cell" id="c8"></td>
                       </tr>
-                    </table>`;
+                    </table>
+                    <div class="controls"></div>`;
 
   where.html(board_html);
 
   return where.find(".board");
-  
-};
+
+}
+
+function buildGameBoardControls(where) {
+
+  where.append('<span class="activable back">Back to lobby</span>');
+
+  where.find(".back").click(lobby);
+
+}
