@@ -15,6 +15,7 @@ data User = User  { user_id   :: Id
                   }
 
 data CellStatus = E | X | O
+                deriving Eq
 
 data Board = Board  { c0 :: CellStatus
                     , c1 :: CellStatus
@@ -37,3 +38,7 @@ data Game = Game  { game_id   :: Id
                         , user_player1  :: User
                         , user_player2  :: Maybe User
                         }
+
+data Play = Play  { player :: User
+                  , play   :: T.Text
+                  }

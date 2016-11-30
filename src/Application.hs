@@ -47,7 +47,7 @@ joinGame = isJSON $
   do
     gameId  <- param "gameid"
     user    <- jsonData :: ActionM User
-    m       <- liftIO (DB.joinGame user gameId)
+    m       <- liftIO (DB.joinGame gameId user)
     maybe invalidOperation json m
 
 watchGame :: ActionM ()
@@ -55,6 +55,13 @@ watchGame = do
   gameId  <- param "gameid"
   game    <- liftIO (DB.getGame gameId)
   maybe invalidOperation json game
+
+playGame :: ActionM ()
+playGame = isJSON $
+  do
+    gameId  <- param "gameid"
+    play    <- jsonData :: ActionM Play
+    liftIO (DB.playGame gameId play) >>= json
 
 app' :: ScottyM ()
 app' = do
@@ -65,6 +72,7 @@ app' = do
   get   "/watch/:gameid"      watchGame
   post  "/newgame"            newGame
   post  "/join/:gameid"       joinGame
+  post  "/play/:gameid"       playGame
   notFound                    invalidOperation
 
 app :: IO Application

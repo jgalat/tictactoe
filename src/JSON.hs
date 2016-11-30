@@ -14,6 +14,12 @@ instance FromJSON User where
                           <*> o .: "username"
   parseJSON _           = mzero
 
+instance FromJSON Play where
+  parseJSON (Object o)  = Play
+                          <$> o .: "player"
+                          <*> o .: "play"
+  parseJSON _           = mzero
+
 instance ToJSON User where
   toJSON (User i u)         = object [ "user_id" .= i, "username" .= u ]
 
