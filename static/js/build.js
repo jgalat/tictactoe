@@ -19,11 +19,15 @@ function buildGameItem(where, game) {
 
 }
 
-function buildControls(where) {
+function buildControls(where, lobby) {
 
-  where.append('<span class="activable newgame">New!</span>');
+  where.append(`<span class="activable newgame">New!</span>
+                <span class="activable refresh">Refresh</span>`);
 
   where.find(".newgame").click(newGame);
+  where.find(".refresh").click(function () {
+    refreshLobby(lobby);
+  });
 
 }
 
@@ -34,7 +38,7 @@ function buildLobby(where) {
   var lobby = where.find(".lobby"),
       controls = where.find(".controls");
 
-  buildControls(controls);
+  buildControls(controls, lobby);
 
   return lobby;
 

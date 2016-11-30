@@ -50,7 +50,9 @@ function join(game_id) {
 }
 
 function rejoin(game_id) {
+
   gameBoard(game_id, true);
+  
 }
 
 function fillLobby(lobby) {
@@ -80,6 +82,14 @@ function fillLobby(lobby) {
     });
 
   });
+
+}
+
+function refreshLobby(lobby) {
+
+  lobby.html("");
+
+  fillLobby(lobby);
 
 }
 
