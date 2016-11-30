@@ -42,6 +42,8 @@ instance ToJSON Board where
             ]
 
 instance ToJSON Game where
+  toJSON (Game i p1 0 _ _)            =
+    object [ "game_id" .= i, "player1" .= p1, "player2" .= Null, "turn" .= Null, "board" .= Null ]
   toJSON (Game i p1 p2 t b)           =
     object [ "game_id" .= i, "player1" .= p1, "player2" .= p2, "turn" .= t, "board" .= b ]
   toJSON (SimpleGame i u1 Nothing)    =

@@ -1,5 +1,5 @@
-var player = null;
-var synchInterval = null;
+var player = null,
+    synchInterval = null;
 
 $(function () {
 

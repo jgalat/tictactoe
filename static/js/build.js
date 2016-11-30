@@ -10,9 +10,12 @@ function buildGameItem(where, game) {
     } else {
       data += ' <span class="activable watch" game="' + game.game_id + '">Watch!<span>';
     }
-
   } else {
-    data += '<span class="activable join" game="' + game.game_id + '">Me!</span>';
+    if (game.player1.user_id == player.user_id) {
+      data += '<span class="activable rejoin" game="' + game.game_id + '">Rejoin!<span>';
+    } else {
+      data += '<span class="activable join" game="' + game.game_id + '">Me!</span>';
+    }
   }
 
   where.append('<li> Game ' + game.game_id + ': ' + data + '</li>');
@@ -47,7 +50,8 @@ function buildLobby(where) {
 
 function buildGameBoard(where) {
 
-  var board_html = `<table class="board">
+  var board_html = `<h3 class="alert"></h3>
+                    <table class="board">
                       <tr>
                         <td class="cell" id="c0"></td>
                         <td class="cell" id="c1"></td>

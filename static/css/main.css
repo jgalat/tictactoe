@@ -42,6 +42,10 @@ li {
   margin: .5rem auto;
 }
 
+.controls {
+  margin-top: 1rem;
+}
+
 .activable {
   cursor: pointer;
   border-bottom: 0.1rem dashed;

@@ -12,9 +12,9 @@ function lobby() {
 
 function gameBoard(game_id, play) {
 
-  var content = $(".content");
-
-  var board = buildGameBoard(content);
+  var content = $(".content"),
+      board = buildGameBoard(content),
+      alert = content.find(".alert");
 
   if (play) {
     makeBoardPlayable(board, game_id);
@@ -22,15 +22,18 @@ function gameBoard(game_id, play) {
 
   function synchronize() {
     watchGameAjax(game_id, function (game) {
-      if (game != null && game.board) {
-        fillBoard(board, game.board);
+      if (game) {
+        if (game.board) {
+          alert.html("Game on!");
+          fillBoard(board, game.board);
+        }
       } else {
-        lobby()
+        lobby();
       }
     });
   }
 
-  synchInterval = setInterval(synchronize, 2000);
+  synchInterval = setInterval(synchronize, 1000);
 
   buildGameBoardControls(content.find(".controls"), synchInterval);
 
